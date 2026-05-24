@@ -33,12 +33,12 @@ type PRKeyMap struct {
 
 var PRKeys = PRKeyMap{
 	PrevSidebarTab: key.NewBinding(
-		key.WithKeys("["),
-		key.WithHelp("[", "previous sidebar tab"),
+		key.WithKeys("[", "shift+tab"),
+		key.WithHelp("[/shift+tab", "previous sidebar tab"),
 	),
 	NextSidebarTab: key.NewBinding(
-		key.WithKeys("]"),
-		key.WithHelp("]", "next sidebar tab"),
+		key.WithKeys("]", "tab"),
+		key.WithHelp("]/tab", "next sidebar tab"),
 	),
 	Approve: key.NewBinding(
 		key.WithKeys("v"),
