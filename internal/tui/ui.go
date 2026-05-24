@@ -270,6 +270,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case key.Matches(msg, m.keys.TogglePreview):
 			m.sidebar.IsOpen = !m.sidebar.IsOpen
+			if !m.sidebar.IsOpen {
+				m.sidebar.IsFullscreen = false
+			}
+			m.syncMainContentWidth()
+
+		case key.Matches(msg, m.keys.ToggleFullscreenPreview):
+			m.sidebar.IsFullscreen = !m.sidebar.IsFullscreen
+			if m.sidebar.IsFullscreen {
+				m.sidebar.IsOpen = true
+			}
 			m.syncMainContentWidth()
 
 		case key.Matches(msg, m.keys.Refresh):
@@ -898,11 +908,15 @@ func (m Model) View() tea.View {
 	content := "No sections defined"
 	currSection := m.getCurrSection()
 	if currSection != nil {
-		content = lipgloss.JoinHorizontal(
-			lipgloss.Top,
-			m.getCurrSection().View(),
-			m.sidebar.View(),
-		)
+		if m.sidebar.IsFullscreen && m.sidebar.IsOpen {
+			content = m.sidebar.View()
+		} else {
+			content = lipgloss.JoinHorizontal(
+				lipgloss.Top,
+				m.getCurrSection().View(),
+				m.sidebar.View(),
+			)
+		}
 	}
 	s.WriteString(content)
 	s.WriteString("\n")
@@ -1051,11 +1065,15 @@ func (m *Model) updateCurrentSection(msg tea.Msg) (cmd tea.Cmd) {
 func (m *Model) syncMainContentWidth() {
 	sideBarOffset := 0
 	if m.sidebar.IsOpen {
-		w := m.ctx.Config.Defaults.Preview.Width
-		if w > 0 && w < 1 {
-			w *= float64(m.ctx.ScreenWidth)
+		if m.sidebar.IsFullscreen {
+			m.ctx.DynamicPreviewWidth = m.ctx.ScreenWidth
+		} else {
+			w := m.ctx.Config.Defaults.Preview.Width
+			if w > 0 && w < 1 {
+				w *= float64(m.ctx.ScreenWidth)
+			}
+			m.ctx.DynamicPreviewWidth = min(int(w), m.ctx.ScreenWidth)
 		}
-		m.ctx.DynamicPreviewWidth = min(int(w), m.ctx.ScreenWidth)
 		sideBarOffset = m.ctx.DynamicPreviewWidth
 	}
 	m.ctx.MainContentWidth = m.ctx.ScreenWidth - sideBarOffset

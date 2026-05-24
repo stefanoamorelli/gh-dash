@@ -33,8 +33,9 @@ type KeyMap struct {
 	Down          key.Binding
 	FirstLine     key.Binding
 	LastLine      key.Binding
-	TogglePreview key.Binding
-	OpenGithub    key.Binding
+	TogglePreview           key.Binding
+	ToggleFullscreenPreview key.Binding
+	OpenGithub              key.Binding
 	Refresh       key.Binding
 	RefreshAll    key.Binding
 	Redraw        key.Binding
@@ -123,6 +124,7 @@ func (k KeyMap) AppKeys() []key.Binding {
 		k.Refresh,
 		k.RefreshAll,
 		k.TogglePreview,
+		k.ToggleFullscreenPreview,
 		k.OpenGithub,
 		k.CopyNumber,
 		k.CopyUrl,
@@ -154,6 +156,10 @@ var Keys = &KeyMap{
 	TogglePreview: key.NewBinding(
 		key.WithKeys("p"),
 		key.WithHelp("p", "open in Preview"),
+	),
+	ToggleFullscreenPreview: key.NewBinding(
+		key.WithKeys("P"),
+		key.WithHelp("P", "fullscreen preview"),
 	),
 	OpenGithub: key.NewBinding(
 		key.WithKeys("o"),
@@ -278,6 +284,8 @@ func rebindUniversal(universal []config.Keybinding) error {
 			key = &Keys.LastLine
 		case "togglePreview":
 			key = &Keys.TogglePreview
+		case "toggleFullscreenPreview":
+			key = &Keys.ToggleFullscreenPreview
 		case "openGithub":
 			key = &Keys.OpenGithub
 		case "refresh":

@@ -13,17 +13,19 @@ import (
 )
 
 type Model struct {
-	IsOpen     bool
-	data       string
-	viewport   viewport.Model
-	ctx        *context.ProgramContext
-	emptyState string
+	IsOpen       bool
+	IsFullscreen bool
+	data         string
+	viewport     viewport.Model
+	ctx          *context.ProgramContext
+	emptyState   string
 }
 
 func NewModel() Model {
 	return Model{
-		IsOpen: false,
-		data:   "",
+		IsOpen:       false,
+		IsFullscreen: false,
+		data:         "",
 		viewport: viewport.New(
 			viewport.WithWidth(0),
 			viewport.WithHeight(0),
